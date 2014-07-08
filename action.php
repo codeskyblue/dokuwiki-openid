@@ -154,7 +154,7 @@ class action_plugin_openid extends DokuWiki_Action_Plugin {
 			// and if registration is possible
 			if (preg_match('!^https?://!', $user)) {
 				$registerOK = ( actionOK('register') || $this->getConf('register_allow') );
-				if ($auth && $auth->canDo('addUser') && $registerOK) {
+				if ($auth && $auth->canDo('addUser') && $registerOK) { # debug
 					$message = sprintf($this->getLang('complete_registration_notice'), $this->_self('openid'));
 					msg($message, 2);
 				}
@@ -289,7 +289,7 @@ class action_plugin_openid extends DokuWiki_Action_Plugin {
 		$user = $_SERVER['REMOTE_USER'];
 
 		if (empty($user)) {
-			print $this->plugin_locale_xhtml('intro');
+			print $this->locale_xhtml('intro');
 			print '<div class="centeralign">'.NL;
 			$form = $this->get_openid_form('login');
 			html_form('register', $form);
@@ -311,6 +311,7 @@ class action_plugin_openid extends DokuWiki_Action_Plugin {
 			echo '<h1>', $this->getLang('openid_identities_title'), '</h1>', NL;
 			$identities = $this->get_associations($_SERVER['REMOTE_USER']);
 			if (!empty($identities)) {
+echo "here";
 				echo '<form action="' . $this->_self('openid') . '" method="post"><div class="no">';
 				echo '<table>';echo '<h1>', $this->getLang('openid_account_fieldset'), '</h1>', NL;
 				foreach ($identities as $identity => $user) {
@@ -444,7 +445,15 @@ class action_plugin_openid extends DokuWiki_Action_Plugin {
 
 		// look for associations passed from an auth backend in user infos
 		$users = $auth->retrieveUsers();
+		
 		foreach ($users as $id => $user) {
+			# add by debug(ssx)
+			$username = substr($openid, -strlen($id)-1, -1); 
+			echo $username, $id;
+			echo "<br>";
+			if ($id == $username) {
+				return $this->update_session($id);
+			}
 			if (isset($user['openids'])) {
 				foreach ($user['openids'] as $identity) {
 					if ($identity == $openid) {
