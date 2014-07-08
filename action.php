@@ -154,7 +154,7 @@ class action_plugin_openid extends DokuWiki_Action_Plugin {
 			// and if registration is possible
 			if (preg_match('!^https?://!', $user)) {
 				$registerOK = ( actionOK('register') || $this->getConf('register_allow') );
-				if ($auth && $auth->canDo('addUser') && $registerOK) { # debug
+				if ($auth && $auth->canDo('addUser') && $registerOK) {
 					$message = sprintf($this->getLang('complete_registration_notice'), $this->_self('openid'));
 					msg($message, 2);
 				}
